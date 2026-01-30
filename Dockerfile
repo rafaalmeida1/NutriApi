@@ -14,11 +14,12 @@ RUN npm install
 # Copiar código fonte
 COPY . .
 
-# Build da aplicação
-RUN npm run build
+# Build da aplicação (usando caminho direto para garantir que funcione)
+RUN node node_modules/@nestjs/cli/bin/nest.js build
 
-# Remover devDependencies após o build para reduzir tamanho da imagem
-RUN npm prune --production
+# NÃO remover @nestjs/cli mesmo em produção, caso seja necessário para start:dev
+# Remover apenas outras devDependencies
+RUN npm uninstall @nestjs/testing @types/jest @types/cookie-parser @types/node @types/nodemailer @types/uuid jest ts-jest ts-node tsconfig-paths typescript 2>/dev/null || true
 
 EXPOSE 3055
 
