@@ -57,10 +57,8 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - .:/app
-      - /app/node_modules
       - uploads_data:/app/uploads
-    command: npm run start:dev
+    command: npm run start:prod
 
 volumes:
   postgres_data:
