@@ -48,9 +48,9 @@ services:
       DB_DATABASE: nutriapp
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      API_URL: http://localhost:3055
+      API_URL: https://api-nutrithata.memberarea.com.br
       UPLOADS_DIR: /app/uploads
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: https://nutrithata.memberarea.com.br
     depends_on:
       postgres:
         condition: service_healthy
