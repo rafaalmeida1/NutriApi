@@ -17,7 +17,9 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env', '.env.local'],
+      ignoreEnvFile: false,
+      expandVariables: true,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => databaseConfig(),

@@ -38,6 +38,9 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
 
+# NOTA: O arquivo .env NÃO deve ser copiado para o container de produção
+# As variáveis de ambiente devem ser passadas via docker-compose.yml ou variáveis de ambiente do Coolify
+
 # Criar diretório de uploads com permissões corretas
 RUN mkdir -p /app/uploads/images /app/uploads/pdfs
 

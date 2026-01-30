@@ -51,6 +51,23 @@ services:
       API_URL: https://api-nutrithata.memberarea.com.br
       UPLOADS_DIR: /app/uploads
       FRONTEND_URL: https://nutrithata.memberarea.com.br
+      # JWT
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-your-super-secret-access-key-change-in-production}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-your-super-secret-refresh-key-change-in-production}
+      JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+      # Google OAuth
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL:-http://localhost:3055/auth/google/callback}
+      # AWS SES
+      SMTP_HOST: ${SMTP_HOST:-email-smtp.sa-east-1.amazonaws.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-no-reply@nutriapp.com}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Nutri Thata}
     depends_on:
       postgres:
         condition: service_healthy
