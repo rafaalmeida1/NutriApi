@@ -1,28 +1,53 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
+
+# Instalar dependências de build para bcrypt e outras libs nativas
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
-# Instalar dependências do sistema se necessário
-RUN apk add --no-cache python3 make g++
-
-# Copiar arquivos de dependências
+# Copiar package files
 COPY package*.json ./
 
-# Instalar todas as dependências (incluindo devDependencies para ter @nestjs/cli)
-RUN npm install
+# Instalar dependências (garantir que devDependencies sejam instaladas durante build)
+# npm ci instala devDependencies por padrão, a menos que NODE_ENV=production
+# Definir NODE_ENV=development explicitamente para garantir instalação de devDependencies
+RUN NODE_ENV=development npm ci
 
 # Copiar código fonte
 COPY . .
 
-# Build da aplicação (usando caminho direto para garantir que funcione)
-RUN node node_modules/@nestjs/cli/bin/nest.js build
+# Build da aplicação
+RUN npm run build
 
-# NÃO remover @nestjs/cli mesmo em produção, caso seja necessário para start:dev
-# Remover apenas outras devDependencies
-RUN npm uninstall @nestjs/testing @types/jest @types/cookie-parser @types/node @types/nodemailer @types/uuid jest ts-jest ts-node tsconfig-paths typescript 2>/dev/null || true
+# Remover dev dependencies
+RUN npm prune --production
+
+# Imagem de produção
+FROM node:20-alpine
+
+# Instalar apenas dependências de runtime (incluindo wget para health checks)
+RUN apk add --no-cache openssl wget
+
+WORKDIR /app
+
+# Criar usuário não-root ANTES de copiar arquivos
+RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001
+
+# Copiar node_modules e build
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
+
+# Criar diretório de uploads com permissões corretas
+RUN mkdir -p /app/uploads/images /app/uploads/pdfs
+
+# Dar permissão ao usuário nestjs em TODO o diretório /app
+RUN chown -R nestjs:nodejs /app
+
+# Mudar para usuário não-root
+USER nestjs
 
 EXPOSE 3055
 
-# Usar start:prod para produção
+# Usar start:prod para produção (não precisa do nest)
 CMD ["npm", "run", "start:prod"]
-
