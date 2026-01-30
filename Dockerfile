@@ -38,6 +38,9 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
 
+# Copiar scripts (incluindo versão JS para produção)
+COPY --from=builder /app/scripts ./scripts
+
 # NOTA: O arquivo .env NÃO deve ser copiado para o container de produção
 # As variáveis de ambiente devem ser passadas via docker-compose.yml ou variáveis de ambiente do Coolify
 
