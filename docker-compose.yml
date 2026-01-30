@@ -39,7 +39,7 @@ services:
     ports:
       - "3055:3055"
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3055
       DB_HOST: postgres
       DB_PORT: 5432
