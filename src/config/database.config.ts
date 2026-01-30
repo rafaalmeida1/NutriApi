@@ -1,6 +1,9 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export function databaseConfig(): TypeOrmModuleOptions {
+  // Permitir synchronize via variável de ambiente para inicialização
+  const allowSynchronize = process.env.DB_SYNCHRONIZE === 'true' || process.env.NODE_ENV !== 'production';
+  
   return {
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',
@@ -9,8 +12,8 @@ export function databaseConfig(): TypeOrmModuleOptions {
     password: process.env.DB_PASSWORD || 'postgres',
     database: process.env.DB_DATABASE || 'nutriapp',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: process.env.NODE_ENV !== 'production',
-    logging: process.env.NODE_ENV === 'development',
+    synchronize: allowSynchronize,
+    logging: process.env.NODE_ENV === 'development' || process.env.DB_LOGGING === 'true',
   };
 }
 
